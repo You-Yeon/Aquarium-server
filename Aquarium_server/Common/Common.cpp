@@ -3,8 +3,8 @@
 
 #include "pch.h"
 #include "framework.h"
+#include "Common.h"
 
-// TODO: 라이브러리 함수의 예제입니다.
-void fnCommon()
-{
-}
+//#SHOW15 Server information
+Guid g_protocolVersion = Guid::From({ 0xe71e4cec, 0x204e, 0x4374, { 0xb1, 0x63, 0x18, 0x6d, 0xc5, 0xc8, 0x4f, 0x5 } });
+int g_serverPort = 35475;

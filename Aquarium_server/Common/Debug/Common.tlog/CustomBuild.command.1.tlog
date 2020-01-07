@@ -1,0 +1,3 @@
+^C:\USERS\최유연\DESKTOP\AQUARIUM_SERVER\AQUARIUM_SERVER\COMMON\S2C2S.PIDL
+"C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe" "C:\Users\최유연\Desktop\Aquarium_server\Aquarium_server\Common\S2C2S.PIDL"  -outdir .\
+"C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe" -cs "C:\Users\최유연\Desktop\Aquarium_server\Aquarium_server\Common\S2C2S.PIDL" -outdir C:\Users\최유연\Desktop\Unity\Aquarium\Assets\PIDL
