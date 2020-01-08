@@ -3,9 +3,7 @@
 
 #include "framework.h"
 #include "Server.h"
-#include "../Common/S2C2S_proxy.cpp"
-#include "../Common/S2C2S_stub.cpp"
-#include "../Common/S2C2S_common.cpp"
+#include "../Common/Common.cpp"
 
 int main()
 {
@@ -33,10 +31,6 @@ void Aquarium_server::Run() // 런타임 함수 정의
 
     };
 
-    //proxy와 stub 객체를 NetServer에 부착
-    m_netServer->AttachProxy(&m_proxy);
-    m_netServer->AttachStub(this);
-
     // 서버 config
     CStartServerParameter startConfig; // config 객체
     startConfig.m_protocolVersion = g_protocolVersion; // 프로토콜 버전
@@ -52,30 +46,4 @@ void Aquarium_server::Run() // 런타임 함수 정의
     
     string line;
     getline(std::cin, line);
-}
-
-DEFRMI_S2C2S_RequestLogin(Aquarium_server)
-{
-    cout << "RequestLogin " << StringT2A(id.c_str()).GetString() << " "
-        << StringT2A(password.c_str()).GetString() << endl;
-
-    CriticalSectionLock lock(m_critSec, true);
-
-    // 이미 있는 유저인가?
-    auto it = m_remoteClients.find(remote);
-    if (it != m_remoteClients.end())
-    {
-        // 있으면 failed 처리
-        m_proxy.NotifyLoginFailed(remote, RmiContext::ReliableSend, L"Already logged in.");
-        return true;
-    }
-
-    // 플레이어 추가
-    auto newRC = make_shared<RemoteClient>();
-    newRC->m_userID = id; // key 값은 Hostid
-    m_remoteClients[remote] = newRC;
-
-    // 성공!
-    m_proxy.NotifyLoginSuccess(remote, RmiContext::ReliableSend);
-    return true;
 }

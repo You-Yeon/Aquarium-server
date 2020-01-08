@@ -1,5 +1,3 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(196,5): warning MSB8062: Custom build for item "S2C2S.PIDL" specifies invalid path ""C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe"" as an additional dependency. This may cause incremental build to work incorrectly.
   Compiling S2C2S.pidl ...
-  pch.cpp
-  Common.cpp
   Common.vcxproj -> C:\Users\최유연\Desktop\Aquarium_server\Aquarium_server\Debug\Common.lib

@@ -1,10 +1,10 @@
 rename cs(std::wstring, System.String);
  
-global S2C2S 1000
+global Simple 1000
 {
     RequestLogin([in] std::wstring id, [in] std::wstring password);
-
+ 
     NotifyLoginSuccess();
-
     NotifyLoginFailed([in] std::wstring reason);
+
 }
