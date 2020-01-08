@@ -11,4 +11,33 @@
 
 #include "S2C2S_common.h"
 
+namespace S2C2S {
+
+
+	class Proxy : public ::Proud::IRmiProxy
+	{
+	public:
+	virtual bool RequestLogin ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const std::wstring & password) PN_SEALED; 
+	virtual bool RequestLogin ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const std::wstring & id, const std::wstring & password)   PN_SEALED;  
+	virtual bool NotifyLoginSuccess ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) PN_SEALED; 
+	virtual bool NotifyLoginSuccess ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext)   PN_SEALED;  
+	virtual bool NotifyLoginFailed ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & reason) PN_SEALED; 
+	virtual bool NotifyLoginFailed ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const std::wstring & reason)   PN_SEALED;  
+static const PNTCHAR* RmiName_RequestLogin;
+static const PNTCHAR* RmiName_NotifyLoginSuccess;
+static const PNTCHAR* RmiName_NotifyLoginFailed;
+static const PNTCHAR* RmiName_First;
+		Proxy()
+		{
+			if(m_signature != 1)
+				::Proud::ShowUserMisuseError(::Proud::ProxyBadSignatureErrorText);
+		}
+
+		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; } 
+		virtual int GetRmiIDListCount() PN_OVERRIDE { return g_RmiIDListCount; }
+	};
+
+}
+
+
 
