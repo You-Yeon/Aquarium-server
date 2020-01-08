@@ -113,7 +113,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>"C:\Program Files (x86)\Nettention\ProudNet\lib\Win32\v142\Debug";"C:\Users\최유연\Desktop\Aquarium_server\Aquarium_server\Debug"</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ProudNetClient.lib;ProudNetServer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ProudNetClient.lib;ProudNetServer.lib;Common.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
