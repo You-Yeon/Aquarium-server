@@ -10,6 +10,12 @@ namespace S2C2S {
     static const ::Proud::RmiID Rmi_NotifyLoginSuccess = (::Proud::RmiID)(1000+2);
                
     static const ::Proud::RmiID Rmi_NotifyLoginFailed = (::Proud::RmiID)(1000+3);
+               
+    static const ::Proud::RmiID Rmi_JoinGameRoom = (::Proud::RmiID)(1000+4);
+               
+    static const ::Proud::RmiID Rmi_Room_Appear = (::Proud::RmiID)(1000+5);
+               
+    static const ::Proud::RmiID Rmi_Room_Disappear = (::Proud::RmiID)(1000+6);
 
 	// List that has RMI ID.
 	extern ::Proud::RmiID g_RmiIDList[];

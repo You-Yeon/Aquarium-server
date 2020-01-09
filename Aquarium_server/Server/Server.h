@@ -4,15 +4,48 @@
 #include "../Common/S2C2S_proxy.h"
 #include "../Common/S2C2S_stub.h"
 
+// 클라이언트 캐릭터 종류 
+enum MyCharacter
+{
+	NONE = 0,
+	C_FastFoodGuy,  // 1
+	C_Biker,        // 2
+	C_FireFighter,  // 3
+	C_GamerGirl,    // 4
+	C_Gangster,     // 5
+	C_Grandma,      // 6
+	C_Grandpa,      // 7
+	C_HipsterGirl,  // 8
+	C_HipsterGuy,   // 9
+	C_Hobo,         // 10
+	C_Jock,         // 11
+	C_Paramedic,    // 12
+	C_PunkGirl,     // 13
+	C_PunkGuy,      // 14
+	C_RoadWorker,   // 15
+	C_ShopKeeper,   // 16
+	C_SummerGirl,   // 17
+	C_Tourist      // 18
+};
+
+// 게임 방 정보
+class RoomInfo
+{
+public:
+	int m_player_num; // 방 인원 수
+};
+
 // 클라이언트 클래스
 class RemoteClient
 {
 public:
 	std::wstring m_userID; // 유저의 HostID 값 (*KEY)
-	int m_character; // 유저의 캐릭터 종류 정보
+	std::wstring m_team; // 유저의 팀 정보
+	MyCharacter m_character; // 유저의 캐릭터 종류 정보
+	float m_humidity; // 유저의 습도 (* 체력)
 	float m_x, m_y, m_z; // 유저의 위치 값
 	float m_vx, m_vy, m_vz; // 유저의 속력 값
-	float m_angle; // 유저의 회전 값
+	float m_angleX, m_angleY; // 유저의 회전 값
 
 };
 
@@ -31,8 +64,13 @@ public:
 	// 멀티스레드의 경쟁 상태를 예방하기 위해서 잠금
 	CriticalSection m_critSec;
 
+	// 클라이언트 그룹
 	// key : client HostID
 	unordered_map<int, shared_ptr<RemoteClient> > m_remoteClients;
+
+	// P2P 그룹
+	// key : r,
+	unordered_map<int, shared_ptr<RoomInfo> > m_playerGroups;
 
 	Aquarium_server()
 	{
@@ -49,4 +87,6 @@ private:
 	// 로그인 원격 함수
 	DECRMI_S2C2S_RequestLogin;
 
+	// 게임 방 관리 원격 함수
+	DECRMI_S2C2S_JoinGameRoom;
 };

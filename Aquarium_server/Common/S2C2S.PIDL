@@ -7,4 +7,8 @@ global S2C2S 1000
     NotifyLoginSuccess();
     NotifyLoginFailed([in] std::wstring reason);
 
+    JoinGameRoom([in] std::wstring id, [in] int character_num);
+
+    Room_Appear([in] int hostID, [in] int character_num, [in] std::wstring team_color);
+	Room_Disappear([in] int hostID);
 }

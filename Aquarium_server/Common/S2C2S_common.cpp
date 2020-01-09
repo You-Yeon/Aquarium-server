@@ -14,9 +14,15 @@ namespace S2C2S {
 		Rmi_NotifyLoginSuccess,
                
 		Rmi_NotifyLoginFailed,
+               
+		Rmi_JoinGameRoom,
+               
+		Rmi_Room_Appear,
+               
+		Rmi_Room_Disappear,
 	};
 
-	int g_RmiIDListCount = 3;
+	int g_RmiIDListCount = 6;
 
 }
 

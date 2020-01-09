@@ -96,6 +96,94 @@ __msg << reason;
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
 			RmiName_NotifyLoginFailed, (::Proud::RmiID)Rmi_NotifyLoginFailed);
 	}
+        
+	bool Proxy::JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const int & character_num)	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_JoinGameRoom;
+__msg.Write(__msgid); 
+	
+__msg << id;
+__msg << character_num;
+		
+		return RmiSend(&remote,1,rmiContext,__msg,
+			RmiName_JoinGameRoom, (::Proud::RmiID)Rmi_JoinGameRoom);
+	}
+
+	bool Proxy::JoinGameRoom ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const std::wstring & id, const int & character_num)  	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_JoinGameRoom;
+__msg.Write(__msgid); 
+	
+__msg << id;
+__msg << character_num;
+		
+		return RmiSend(remotes,remoteCount,rmiContext,__msg,
+			RmiName_JoinGameRoom, (::Proud::RmiID)Rmi_JoinGameRoom);
+	}
+        
+	bool Proxy::Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const int & character_num)	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Room_Appear;
+__msg.Write(__msgid); 
+	
+__msg << hostID;
+__msg << character_num;
+		
+		return RmiSend(&remote,1,rmiContext,__msg,
+			RmiName_Room_Appear, (::Proud::RmiID)Rmi_Room_Appear);
+	}
+
+	bool Proxy::Room_Appear ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & hostID, const int & character_num)  	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Room_Appear;
+__msg.Write(__msgid); 
+	
+__msg << hostID;
+__msg << character_num;
+		
+		return RmiSend(remotes,remoteCount,rmiContext,__msg,
+			RmiName_Room_Appear, (::Proud::RmiID)Rmi_Room_Appear);
+	}
+        
+	bool Proxy::Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID)	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Room_Disappear;
+__msg.Write(__msgid); 
+	
+__msg << hostID;
+		
+		return RmiSend(&remote,1,rmiContext,__msg,
+			RmiName_Room_Disappear, (::Proud::RmiID)Rmi_Room_Disappear);
+	}
+
+	bool Proxy::Room_Disappear ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & hostID)  	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Room_Disappear;
+__msg.Write(__msgid); 
+	
+__msg << hostID;
+		
+		return RmiSend(remotes,remoteCount,rmiContext,__msg,
+			RmiName_Room_Disappear, (::Proud::RmiID)Rmi_Room_Disappear);
+	}
 #ifdef USE_RMI_NAME_STRING
 const PNTCHAR* Proxy::RmiName_RequestLogin =_PNT("RequestLogin");
 #else
@@ -110,6 +198,21 @@ const PNTCHAR* Proxy::RmiName_NotifyLoginSuccess =_PNT("");
 const PNTCHAR* Proxy::RmiName_NotifyLoginFailed =_PNT("NotifyLoginFailed");
 #else
 const PNTCHAR* Proxy::RmiName_NotifyLoginFailed =_PNT("");
+#endif
+#ifdef USE_RMI_NAME_STRING
+const PNTCHAR* Proxy::RmiName_JoinGameRoom =_PNT("JoinGameRoom");
+#else
+const PNTCHAR* Proxy::RmiName_JoinGameRoom =_PNT("");
+#endif
+#ifdef USE_RMI_NAME_STRING
+const PNTCHAR* Proxy::RmiName_Room_Appear =_PNT("Room_Appear");
+#else
+const PNTCHAR* Proxy::RmiName_Room_Appear =_PNT("");
+#endif
+#ifdef USE_RMI_NAME_STRING
+const PNTCHAR* Proxy::RmiName_Room_Disappear =_PNT("Room_Disappear");
+#else
+const PNTCHAR* Proxy::RmiName_Room_Disappear =_PNT("");
 #endif
 const PNTCHAR* Proxy::RmiName_First = RmiName_RequestLogin;
 

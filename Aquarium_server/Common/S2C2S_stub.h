@@ -50,11 +50,44 @@ namespace S2C2S {
 #define DEFRMI_S2C2S_NotifyLoginFailed(DerivedClass) bool DerivedClass::NotifyLoginFailed ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & reason)
 #define CALL_S2C2S_NotifyLoginFailed NotifyLoginFailed ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & reason)
 #define PARAM_S2C2S_NotifyLoginFailed ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & reason)
+               
+		virtual bool JoinGameRoom ( ::Proud::HostID, ::Proud::RmiContext& , const std::wstring & , const int & )		{ 
+			return false;
+		} 
+
+#define DECRMI_S2C2S_JoinGameRoom bool JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const int & character_num) PN_OVERRIDE
+
+#define DEFRMI_S2C2S_JoinGameRoom(DerivedClass) bool DerivedClass::JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const int & character_num)
+#define CALL_S2C2S_JoinGameRoom JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const int & character_num)
+#define PARAM_S2C2S_JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const int & character_num)
+               
+		virtual bool Room_Appear ( ::Proud::HostID, ::Proud::RmiContext& , const int & , const int & )		{ 
+			return false;
+		} 
+
+#define DECRMI_S2C2S_Room_Appear bool Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const int & character_num) PN_OVERRIDE
+
+#define DEFRMI_S2C2S_Room_Appear(DerivedClass) bool DerivedClass::Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const int & character_num)
+#define CALL_S2C2S_Room_Appear Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const int & character_num)
+#define PARAM_S2C2S_Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const int & character_num)
+               
+		virtual bool Room_Disappear ( ::Proud::HostID, ::Proud::RmiContext& , const int & )		{ 
+			return false;
+		} 
+
+#define DECRMI_S2C2S_Room_Disappear bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID) PN_OVERRIDE
+
+#define DEFRMI_S2C2S_Room_Disappear(DerivedClass) bool DerivedClass::Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID)
+#define CALL_S2C2S_Room_Disappear Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID)
+#define PARAM_S2C2S_Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID)
  
 		virtual bool ProcessReceivedMessage(::Proud::CReceivedMessage &pa, void* hostTag) PN_OVERRIDE;
 		static const PNTCHAR* RmiName_RequestLogin;
 		static const PNTCHAR* RmiName_NotifyLoginSuccess;
 		static const PNTCHAR* RmiName_NotifyLoginFailed;
+		static const PNTCHAR* RmiName_JoinGameRoom;
+		static const PNTCHAR* RmiName_Room_Appear;
+		static const PNTCHAR* RmiName_Room_Disappear;
 		static const PNTCHAR* RmiName_First;
 		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; }
 		virtual int GetRmiIDListCount() PN_OVERRIDE { return g_RmiIDListCount; }
@@ -90,6 +123,33 @@ namespace S2C2S {
 			if (NotifyLoginFailed_Function==nullptr) 
 				return true; 
 			return NotifyLoginFailed_Function(remote,rmiContext, reason); 
+		}
+
+               
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const std::wstring & , const int & ) > JoinGameRoom_Function;
+		virtual bool JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const int & character_num) 
+		{ 
+			if (JoinGameRoom_Function==nullptr) 
+				return true; 
+			return JoinGameRoom_Function(remote,rmiContext, id, character_num); 
+		}
+
+               
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const int & , const int & ) > Room_Appear_Function;
+		virtual bool Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const int & character_num) 
+		{ 
+			if (Room_Appear_Function==nullptr) 
+				return true; 
+			return Room_Appear_Function(remote,rmiContext, hostID, character_num); 
+		}
+
+               
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const int & ) > Room_Disappear_Function;
+		virtual bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID) 
+		{ 
+			if (Room_Disappear_Function==nullptr) 
+				return true; 
+			return Room_Disappear_Function(remote,rmiContext, hostID); 
 		}
 
 	};
