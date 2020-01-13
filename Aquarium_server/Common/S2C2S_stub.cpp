@@ -309,7 +309,6 @@ namespace S2C2S {
 			            return true;
 			        }
 			
-					std::wstring id; __msg >> id;
 					int character_num; __msg >> character_num;
 					m_core->PostCheckReadMessage(__msg,RmiName_JoinGameRoom);
 					
@@ -318,9 +317,6 @@ namespace S2C2S {
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,id);	
-										
-						parameterString += _PNT(", ");
 						::Proud::AppendTextOut(parameterString,character_num);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_JoinGameRoom, 
@@ -353,7 +349,7 @@ namespace S2C2S {
 					}
 						
 					// Call this method.
-					bool __ret = JoinGameRoom (remote,ctx , id, character_num );
+					bool __ret = JoinGameRoom (remote,ctx , character_num );
 						
 					if(__ret==false)
 					{
@@ -396,7 +392,10 @@ namespace S2C2S {
 			        }
 			
 					int hostID; __msg >> hostID;
+					std::wstring id; __msg >> id;
 					int character_num; __msg >> character_num;
+					std::wstring team_color; __msg >> team_color;
+					int team_num; __msg >> team_num;
 					m_core->PostCheckReadMessage(__msg,RmiName_Room_Appear);
 					
 			
@@ -407,7 +406,16 @@ namespace S2C2S {
 						::Proud::AppendTextOut(parameterString,hostID);	
 										
 						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,id);	
+										
+						parameterString += _PNT(", ");
 						::Proud::AppendTextOut(parameterString,character_num);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,team_color);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,team_num);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Room_Appear, 
 							RmiName_Room_Appear,parameterString);
@@ -439,7 +447,7 @@ namespace S2C2S {
 					}
 						
 					// Call this method.
-					bool __ret = Room_Appear (remote,ctx , hostID, character_num );
+					bool __ret = Room_Appear (remote,ctx , hostID, id, character_num, team_color, team_num );
 						
 					if(__ret==false)
 					{

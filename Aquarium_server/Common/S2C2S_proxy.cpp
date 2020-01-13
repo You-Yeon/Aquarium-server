@@ -97,7 +97,7 @@ __msg << reason;
 			RmiName_NotifyLoginFailed, (::Proud::RmiID)Rmi_NotifyLoginFailed);
 	}
         
-	bool Proxy::JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const std::wstring & id, const int & character_num)	{
+	bool Proxy::JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & character_num)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -105,14 +105,13 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 ::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_JoinGameRoom;
 __msg.Write(__msgid); 
 	
-__msg << id;
 __msg << character_num;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
 			RmiName_JoinGameRoom, (::Proud::RmiID)Rmi_JoinGameRoom);
 	}
 
-	bool Proxy::JoinGameRoom ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const std::wstring & id, const int & character_num)  	{
+	bool Proxy::JoinGameRoom ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & character_num)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -120,14 +119,13 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 ::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_JoinGameRoom;
 __msg.Write(__msgid); 
 	
-__msg << id;
 __msg << character_num;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
 			RmiName_JoinGameRoom, (::Proud::RmiID)Rmi_JoinGameRoom);
 	}
         
-	bool Proxy::Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const int & character_num)	{
+	bool Proxy::Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const std::wstring & id, const int & character_num, const std::wstring & team_color, const int & team_num)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -136,13 +134,16 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 __msg.Write(__msgid); 
 	
 __msg << hostID;
+__msg << id;
 __msg << character_num;
+__msg << team_color;
+__msg << team_num;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
 			RmiName_Room_Appear, (::Proud::RmiID)Rmi_Room_Appear);
 	}
 
-	bool Proxy::Room_Appear ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & hostID, const int & character_num)  	{
+	bool Proxy::Room_Appear ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & hostID, const std::wstring & id, const int & character_num, const std::wstring & team_color, const int & team_num)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
@@ -151,7 +152,10 @@ __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 __msg.Write(__msgid); 
 	
 __msg << hostID;
+__msg << id;
 __msg << character_num;
+__msg << team_color;
+__msg << team_num;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
 			RmiName_Room_Appear, (::Proud::RmiID)Rmi_Room_Appear);
