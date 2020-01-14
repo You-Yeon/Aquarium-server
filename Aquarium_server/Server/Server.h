@@ -44,6 +44,7 @@ class RemoteClient
 {
 public:
 	std::wstring m_userID; // 유저의 HostID 값 (*KEY)
+	int m_groupID;// 유저가 속한 P2P Group ID 값
 	std::wstring m_Team; // 유저의 팀 정보
 	int m_TeamNum; // 유저의 팀 번호 ( * 리스폰 위치와 대기실 순서 )
 	MyCharacter m_character; // 유저의 캐릭터 종류 정보
@@ -100,6 +101,9 @@ private:
 	// 로그인 원격 함수
 	DECRMI_S2C2S_RequestLogin;
 
-	// 게임 방 관리 원격 함수
+	// 게임 방 입장 원격 함수
 	DECRMI_S2C2S_JoinGameRoom;
+
+	// 게임 방 퇴장 원격 함수
+	DECRMI_S2C2S_LeaveGameRoom;
 };

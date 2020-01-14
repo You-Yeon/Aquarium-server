@@ -1,5 +1,4 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppClean.targets(76,5): warning : 'c:\users\최유연\desktop\aquarium_server\aquarium_server\common\debug\common.pch' 파일은 다른 프로세스에서 사용 중이므로 프로세스에서 액세스할 수 없습니다.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(196,5): warning MSB8062: Custom build for item "S2C2S.PIDL" specifies invalid path ""C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe"" as an additional dependency. This may cause incremental build to work incorrectly.
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(196,5): warning MSB8062: Custom build for item "S2C2S.PIDL" specifies invalid path ""C:\Program Files (x86)\Nettention\ProudNet\util\PIDL.exe"" as an additional dependency. This may cause incremental build to work incorrectly.
   Compiling S2C2S.pidl ...
   pch.cpp
   Common.cpp

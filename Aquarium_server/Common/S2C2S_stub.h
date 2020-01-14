@@ -61,6 +61,16 @@ namespace S2C2S {
 #define CALL_S2C2S_JoinGameRoom JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & character_num)
 #define PARAM_S2C2S_JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & character_num)
                
+		virtual bool LeaveGameRoom ( ::Proud::HostID, ::Proud::RmiContext& )		{ 
+			return false;
+		} 
+
+#define DECRMI_S2C2S_LeaveGameRoom bool LeaveGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) PN_OVERRIDE
+
+#define DEFRMI_S2C2S_LeaveGameRoom(DerivedClass) bool DerivedClass::LeaveGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
+#define CALL_S2C2S_LeaveGameRoom LeaveGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
+#define PARAM_S2C2S_LeaveGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
+               
 		virtual bool Room_Appear ( ::Proud::HostID, ::Proud::RmiContext& , const int & , const std::wstring & , const int & , const std::wstring & , const int & )		{ 
 			return false;
 		} 
@@ -86,6 +96,7 @@ namespace S2C2S {
 		static const PNTCHAR* RmiName_NotifyLoginSuccess;
 		static const PNTCHAR* RmiName_NotifyLoginFailed;
 		static const PNTCHAR* RmiName_JoinGameRoom;
+		static const PNTCHAR* RmiName_LeaveGameRoom;
 		static const PNTCHAR* RmiName_Room_Appear;
 		static const PNTCHAR* RmiName_Room_Disappear;
 		static const PNTCHAR* RmiName_First;
@@ -132,6 +143,15 @@ namespace S2C2S {
 			if (JoinGameRoom_Function==nullptr) 
 				return true; 
 			return JoinGameRoom_Function(remote,rmiContext, character_num); 
+		}
+
+               
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& ) > LeaveGameRoom_Function;
+		virtual bool LeaveGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) 
+		{ 
+			if (LeaveGameRoom_Function==nullptr) 
+				return true; 
+			return LeaveGameRoom_Function(remote,rmiContext); 
 		}
 
                

@@ -125,6 +125,32 @@ __msg << character_num;
 			RmiName_JoinGameRoom, (::Proud::RmiID)Rmi_JoinGameRoom);
 	}
         
+	bool Proxy::LeaveGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_LeaveGameRoom;
+__msg.Write(__msgid); 
+	
+		
+		return RmiSend(&remote,1,rmiContext,__msg,
+			RmiName_LeaveGameRoom, (::Proud::RmiID)Rmi_LeaveGameRoom);
+	}
+
+	bool Proxy::LeaveGameRoom ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext)  	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_LeaveGameRoom;
+__msg.Write(__msgid); 
+	
+		
+		return RmiSend(remotes,remoteCount,rmiContext,__msg,
+			RmiName_LeaveGameRoom, (::Proud::RmiID)Rmi_LeaveGameRoom);
+	}
+        
 	bool Proxy::Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const std::wstring & id, const int & character_num, const std::wstring & team_color, const int & team_num)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
@@ -207,6 +233,11 @@ const PNTCHAR* Proxy::RmiName_NotifyLoginFailed =_PNT("");
 const PNTCHAR* Proxy::RmiName_JoinGameRoom =_PNT("JoinGameRoom");
 #else
 const PNTCHAR* Proxy::RmiName_JoinGameRoom =_PNT("");
+#endif
+#ifdef USE_RMI_NAME_STRING
+const PNTCHAR* Proxy::RmiName_LeaveGameRoom =_PNT("LeaveGameRoom");
+#else
+const PNTCHAR* Proxy::RmiName_LeaveGameRoom =_PNT("");
 #endif
 #ifdef USE_RMI_NAME_STRING
 const PNTCHAR* Proxy::RmiName_Room_Appear =_PNT("Room_Appear");

@@ -25,6 +25,8 @@ namespace S2C2S {
 	virtual bool NotifyLoginFailed ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const std::wstring & reason)   PN_SEALED;  
 	virtual bool JoinGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & character_num) PN_SEALED; 
 	virtual bool JoinGameRoom ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & character_num)   PN_SEALED;  
+	virtual bool LeaveGameRoom ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) PN_SEALED; 
+	virtual bool LeaveGameRoom ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext)   PN_SEALED;  
 	virtual bool Room_Appear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID, const std::wstring & id, const int & character_num, const std::wstring & team_color, const int & team_num) PN_SEALED; 
 	virtual bool Room_Appear ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & hostID, const std::wstring & id, const int & character_num, const std::wstring & team_color, const int & team_num)   PN_SEALED;  
 	virtual bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID) PN_SEALED; 
@@ -33,6 +35,7 @@ static const PNTCHAR* RmiName_RequestLogin;
 static const PNTCHAR* RmiName_NotifyLoginSuccess;
 static const PNTCHAR* RmiName_NotifyLoginFailed;
 static const PNTCHAR* RmiName_JoinGameRoom;
+static const PNTCHAR* RmiName_LeaveGameRoom;
 static const PNTCHAR* RmiName_Room_Appear;
 static const PNTCHAR* RmiName_Room_Disappear;
 static const PNTCHAR* RmiName_First;

@@ -31,6 +31,57 @@ void Aquarium_server::Run() // 런타임 함수 정의
     {
         cout << "Client " << info->m_HostID << " went out.\n";
 
+        CriticalSectionLock lock(m_critSec, true);
+
+        // 플레이어가 P2P 방에 있었을 경우
+        if (m_Client_Infos[info->m_HostID]->m_groupID != 0)
+        {
+            // P2P 방 아이디
+            HostID GroupID = static_cast<HostID>(m_Client_Infos[info->m_HostID]->m_groupID);
+
+            // 클라이언트의 그룹아이디 값 초기화
+            m_Client_Infos[info->m_HostID]->m_groupID = 0;
+
+            // P2P 방에서 클라이언트 삭제
+            m_server->LeaveP2PGroup(info->m_HostID, GroupID);
+
+            // 만약 방에 나만 있었다면, P2P 방을 삭제.
+            if (m_Group_Infos[GroupID]->m_player_num == 1)
+            {
+                // P2P 방 삭제
+                m_Group_Infos.erase(GroupID);
+                m_playerGroups.erase(GroupID);
+            }
+            // 방에 나 이외에 다른 사람도 있었다면 P2P 방을 계속 보관.
+            else if (m_Group_Infos[GroupID]->m_player_num > 1)
+            {
+                // 플레이어 감소
+                m_Group_Infos[GroupID]->m_player_num--;
+                if (m_Client_Infos[info->m_HostID]->m_Team.compare(L"Sapphire") == 0)
+                {
+                    m_Group_Infos[GroupID]->m_S_Team_num--;
+                }
+                if (m_Client_Infos[info->m_HostID]->m_Team.compare(L"Ruby") == 0)
+                {
+                    m_Group_Infos[GroupID]->m_R_Team_num--;
+                }
+
+                // 멤버 삭제
+                m_playerGroups[GroupID].m_members.RemoveOneByValue(info->m_HostID);
+
+                // P2P 방에 있는 클라이언트에게 게임 방 퇴장 알림.
+                if (true == m_server->GetP2PGroupInfo(GroupID, m_playerGroups.find(GroupID)->second))
+                {
+                    for (auto member : m_playerGroups.find(GroupID)->second.m_members)
+                    {
+                        m_proxy.Room_Disappear(member, RmiContext::ReliableSend, m_Client_Infos[info->m_HostID]->m_TeamNum);
+                    }
+                }
+            }
+        }
+
+        // 플레이어 삭제
+        m_Client_Infos.erase(info->m_HostID);
     };
 
     //proxy와 stub 객체를 NetServer에 부착
@@ -97,6 +148,7 @@ DEFRMI_S2C2S_RequestLogin(Aquarium_server)
     // 플레이어 정보 추가하기
     auto newRC = make_shared<RemoteClient>();
     newRC->m_userID = id; // key 값은 Hostid
+    newRC->m_groupID = 0; // 그룹 ID값은 0으로 초기화
     m_Client_Infos[remote] = newRC;
 
     // 로그인 성공!
@@ -127,7 +179,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
 
     // P2P 방 Key
     HostID RoomID;
-    
+
     // 플레이어 방 검색, 게임 방 조인
     for(auto it = m_Group_Infos.begin(); it != m_Group_Infos.end(); ++it)
     {
@@ -149,6 +201,9 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             // 인원 수 증가
             it->second->m_player_num++;
             
+            // P2PGroup ID 저장
+            m_Client_Infos[remote]->m_groupID = RoomID;
+
             break;
         }
 
@@ -184,9 +239,48 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             //m_server->JoinP2PGroup(HostID_Server, RoomID);
             //m_server->JoinP2PGroup(remote, RoomID);
 
+            // P2PGroup ID 저장
+            m_Client_Infos[remote]->m_groupID = RoomID;
+
             break;
         }
 
+    }
+
+    // 만약 서버 시작시에 방이 생성되어 1개 이상이지만 그 마저 없다면.
+    if (m_Group_Infos.empty())
+    {
+        cout << "아무것도 없기에 새로운 방 생성 " << endl;
+
+        // P2P 방 생성
+        RoomID = m_server->CreateP2PGroup();
+
+        // P2P 방 정보 입력
+        auto newGroupInfo = make_shared<RoomInfo>();
+        newGroupInfo->m_player_num = 1; // 방 인원수는 1명, 이제 입장할 예정이므로
+        newGroupInfo->m_S_Team_num = 0; // 사파이어 팀의 인원 수는 0명
+        newGroupInfo->m_R_Team_num = 0; // 루비 팀의 인원 수는 0명
+
+        m_Group_Infos[RoomID] = newGroupInfo;
+
+        // P2P 방 생성
+        CP2PGroup newP2PGroup;
+        newP2PGroup.m_groupHostID = RoomID;
+
+        // 서버 P2P Join (* 클라이언트 정보 업데이트를 위해서)
+        // 대기방에 들어오는 클라이언트에게 다른 클라이언트 정보 업데이트할 때
+        newP2PGroup.m_members.Add(HostID_Server);
+
+        // 해당 클라이언트는 P2PMemberJoinHandler 이벤트 콜백
+        newP2PGroup.m_members.Add(remote); // 클라이언트 ID 추가
+
+        m_playerGroups[RoomID] = newP2PGroup;
+
+        //m_server->JoinP2PGroup(HostID_Server, RoomID);
+        //m_server->JoinP2PGroup(remote, RoomID);
+
+        // P2PGroup ID 저장
+        m_Client_Infos[remote]->m_groupID = RoomID;
     }
 
     int S_num = m_Group_Infos[RoomID]->m_S_Team_num;
@@ -260,16 +354,16 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             {
                 if (it != HostID_Server && m_Client_Infos[it]->m_Team.compare(L"Sapphire") == 0) // 같은 팀원의 ID를 찾자.
                 {
-                    if (m_Client_Infos[it]->m_TeamNum == 1) // 같은 팀원의 번호가 2일 경우
-                    {
-                        m_Client_Infos[remote]->m_TeamNum = 3; // 본인은 4번으로
-                        break;
-                    }
-                    else if (m_Client_Infos[it]->m_TeamNum == 3) // 같은 팀원의 번호가 4일 경우
-                    {
-                        m_Client_Infos[remote]->m_TeamNum = 1; // 본인은 2번으로
-                        break;
-                    }
+                if (m_Client_Infos[it]->m_TeamNum == 1) // 같은 팀원의 번호가 2일 경우
+                {
+                    m_Client_Infos[remote]->m_TeamNum = 3; // 본인은 4번으로
+                    break;
+                }
+                else if (m_Client_Infos[it]->m_TeamNum == 3) // 같은 팀원의 번호가 4일 경우
+                {
+                    m_Client_Infos[remote]->m_TeamNum = 1; // 본인은 2번으로
+                    break;
+                }
                 }
             }
         }
@@ -311,9 +405,73 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
                 }
             }
         }
-            
+
     }
 
     return true;
 
+}
+
+DEFRMI_S2C2S_LeaveGameRoom(Aquarium_server)
+{
+    cout << "LeaveGameRoom is called.\n";
+
+    // 잠금 
+    CriticalSectionLock lock(m_critSec, true);
+
+    // 클라이언트 데이터에 있는지 확인
+    auto it = m_Client_Infos.find(remote);
+    if (it == m_Client_Infos.end())
+    {
+        // 없다면 리턴
+        return true;
+    }
+
+    // P2P 방 아이디
+    HostID GroupID = static_cast<HostID>(m_Client_Infos[remote]->m_groupID);
+
+    // it의 key 값이 remote와 다를 경우 에러 발생.
+    assert(it->first == remote);
+
+    // 클라이언트의 그룹아이디 값 초기화
+    m_Client_Infos[remote]->m_groupID = 0;
+
+    // P2P 방에서 클라이언트 삭제
+    m_server->LeaveP2PGroup(remote, GroupID);
+
+    // 만약 방에 나만 있었다면, P2P 방을 삭제.
+    if (m_Group_Infos[GroupID]->m_player_num == 1)
+    {
+        // P2P 방 삭제
+        m_Group_Infos.erase(GroupID);
+        m_playerGroups.erase(GroupID);
+    }
+    // 방에 나 이외에 다른 사람도 있었다면 P2P 방을 계속 보관.
+    else if (m_Group_Infos[GroupID]->m_player_num > 1)
+    {
+        // 플레이어 감소
+        m_Group_Infos[GroupID]->m_player_num--;
+        if (m_Client_Infos[remote]->m_Team.compare(L"Sapphire") == 0)
+        {
+            m_Group_Infos[GroupID]->m_S_Team_num--;
+        }
+        if (m_Client_Infos[remote]->m_Team.compare(L"Ruby") == 0)
+        {
+            m_Group_Infos[GroupID]->m_R_Team_num--;
+        }
+            
+        // 멤버 삭제
+        m_playerGroups[GroupID].m_members.RemoveOneByValue(remote);
+
+        // P2P 방에 있는 클라이언트에게 게임 방 퇴장 알림.
+        if (true == m_server->GetP2PGroupInfo(GroupID, m_playerGroups.find(GroupID)->second))
+        {
+            for (auto member : m_playerGroups.find(GroupID)->second.m_members)
+            {
+                m_proxy.Room_Disappear(member, RmiContext::ReliableSend, m_Client_Infos[remote]->m_TeamNum);
+            }
+        }
+    }
+
+    return true;
 }

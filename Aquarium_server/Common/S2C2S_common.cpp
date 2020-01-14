@@ -17,12 +17,14 @@ namespace S2C2S {
                
 		Rmi_JoinGameRoom,
                
+		Rmi_LeaveGameRoom,
+               
 		Rmi_Room_Appear,
                
 		Rmi_Room_Disappear,
 	};
 
-	int g_RmiIDListCount = 6;
+	int g_RmiIDListCount = 7;
 
 }
 
