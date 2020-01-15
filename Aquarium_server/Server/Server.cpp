@@ -185,7 +185,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
     {
         cout << "P2P 정보" << it->first << it->second << endl;
 
-        // 인원 수가 4 적을 경우 입장
+        // 인원 수가 최대 인원 수보다 적을 경우 입장
         if (it->second->m_player_num < max_player_num)
         {
             cout << "인원 수가 적음. " << endl;
@@ -289,14 +289,14 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
     wstring TeamColor; // 팀 색상
 
     // 플레이어 팀 색상 및 번호 부여
-    if (S_num > R_num) // 2 : 1 or 1 : 0 ( 루비 팀 부여 )
+    if (S_num > R_num) // 2 : 1 or 1 : 0 or 2: 0 ( 루비 팀 부여 )
     {
         // 플레이어 팀 업데이트 및 인원 추가 업데이트
         TeamColor = L"Ruby";
         m_Client_Infos[remote]->m_Team = L"Ruby";
         m_Group_Infos[RoomID]->m_R_Team_num++;
     }
-    else if (S_num < R_num) // 1 : 2 or 0 : 1 ( 사파이어 팀 부여 )
+    else if (S_num < R_num) // 1 : 2 or 0 : 1 or 0 : 2 ( 사파이어 팀 부여 )
     {
         // 플레이어 팀 업데이트 및 인원 추가 업데이트
         TeamColor = L"Sapphire";
@@ -369,7 +369,6 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
         }
     }
 
-
     // it의 key 값이 remote와 다를 경우 에러 발생.
     assert(it->first == remote);
 
@@ -378,6 +377,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
     // 마찬가지로, 새 클라이언트에게 기존 클라이언트의 등장을 알림.
     if (true == m_server->GetP2PGroupInfo(RoomID, m_playerGroups.find(RoomID)->second))
     {
+        // 팀 방에 입장하고 플레이어 UI 처리
         for (auto member : m_playerGroups.find(RoomID)->second.m_members)
         {
             if (member != HostID_Server) // 서버는 제외
@@ -399,9 +399,15 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
 
                 else // 새 클라이언트일 경우
                 {
-                    // 기존 클라이언트에게 기존 클라이언트의 정보 업데이트
+                    // 새 클라이언트에게 새 클라이언트의 정보 업데이트
                     m_proxy.Room_Appear((HostID)it->first, RmiContext::ReliableSend,
                         (HostID)it->first, rc->m_userID, rc->m_character, rc->m_Team, rc->m_TeamNum);
+                }
+
+                // 팀 인원 수가 최대 인원수로 될 경우, 게임 카운트 시작.
+                if (m_Group_Infos[RoomID]->m_player_num == max_player_num)
+                {
+                    m_proxy.GameCount((HostID)member, RmiContext::ReliableSend);
                 }
             }
         }

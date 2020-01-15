@@ -569,7 +569,7 @@ namespace S2C2S {
 			            return true;
 			        }
 			
-					int hostID; __msg >> hostID;
+					int team_num; __msg >> team_num;
 					m_core->PostCheckReadMessage(__msg,RmiName_Room_Disappear);
 					
 			
@@ -577,7 +577,7 @@ namespace S2C2S {
 					{
 						::Proud::String parameterString;
 						
-						::Proud::AppendTextOut(parameterString,hostID);	
+						::Proud::AppendTextOut(parameterString,team_num);	
 						
 						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Room_Disappear, 
 							RmiName_Room_Disappear,parameterString);
@@ -609,7 +609,7 @@ namespace S2C2S {
 					}
 						
 					// Call this method.
-					bool __ret = Room_Disappear (remote,ctx , hostID );
+					bool __ret = Room_Disappear (remote,ctx , team_num );
 						
 					if(__ret==false)
 					{
@@ -622,6 +622,86 @@ namespace S2C2S {
 						::Proud::AfterRmiSummary summary;
 						summary.m_rmiID = (::Proud::RmiID)Rmi_Room_Disappear;
 						summary.m_rmiName = RmiName_Room_Disappear;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
+			case Rmi_GameCount:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					m_core->PostCheckReadMessage(__msg,RmiName_GameCount);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+									
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_GameCount, 
+							RmiName_GameCount,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameCount, 
+							RmiName_GameCount, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameCount, 
+							RmiName_GameCount, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_GameCount;
+						summary.m_rmiName = RmiName_GameCount;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = GameCount (remote,ctx  );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_GameCount);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_GameCount;
+						summary.m_rmiName = RmiName_GameCount;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -677,6 +757,11 @@ __fail:
 	const PNTCHAR* Stub::RmiName_Room_Disappear =_PNT("Room_Disappear");
 	#else
 	const PNTCHAR* Stub::RmiName_Room_Disappear =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_GameCount =_PNT("GameCount");
+	#else
+	const PNTCHAR* Stub::RmiName_GameCount =_PNT("");
 	#endif
 	const PNTCHAR* Stub::RmiName_First = RmiName_RequestLogin;
 

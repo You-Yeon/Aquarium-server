@@ -85,11 +85,21 @@ namespace S2C2S {
 			return false;
 		} 
 
-#define DECRMI_S2C2S_Room_Disappear bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID) PN_OVERRIDE
+#define DECRMI_S2C2S_Room_Disappear bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num) PN_OVERRIDE
 
-#define DEFRMI_S2C2S_Room_Disappear(DerivedClass) bool DerivedClass::Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID)
-#define CALL_S2C2S_Room_Disappear Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID)
-#define PARAM_S2C2S_Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID)
+#define DEFRMI_S2C2S_Room_Disappear(DerivedClass) bool DerivedClass::Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num)
+#define CALL_S2C2S_Room_Disappear Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num)
+#define PARAM_S2C2S_Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num)
+               
+		virtual bool GameCount ( ::Proud::HostID, ::Proud::RmiContext& )		{ 
+			return false;
+		} 
+
+#define DECRMI_S2C2S_GameCount bool GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) PN_OVERRIDE
+
+#define DEFRMI_S2C2S_GameCount(DerivedClass) bool DerivedClass::GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
+#define CALL_S2C2S_GameCount GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
+#define PARAM_S2C2S_GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
  
 		virtual bool ProcessReceivedMessage(::Proud::CReceivedMessage &pa, void* hostTag) PN_OVERRIDE;
 		static const PNTCHAR* RmiName_RequestLogin;
@@ -99,6 +109,7 @@ namespace S2C2S {
 		static const PNTCHAR* RmiName_LeaveGameRoom;
 		static const PNTCHAR* RmiName_Room_Appear;
 		static const PNTCHAR* RmiName_Room_Disappear;
+		static const PNTCHAR* RmiName_GameCount;
 		static const PNTCHAR* RmiName_First;
 		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; }
 		virtual int GetRmiIDListCount() PN_OVERRIDE { return g_RmiIDListCount; }
@@ -165,11 +176,20 @@ namespace S2C2S {
 
                
 		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const int & ) > Room_Disappear_Function;
-		virtual bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & hostID) 
+		virtual bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num) 
 		{ 
 			if (Room_Disappear_Function==nullptr) 
 				return true; 
-			return Room_Disappear_Function(remote,rmiContext, hostID); 
+			return Room_Disappear_Function(remote,rmiContext, team_num); 
+		}
+
+               
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& ) > GameCount_Function;
+		virtual bool GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) 
+		{ 
+			if (GameCount_Function==nullptr) 
+				return true; 
+			return GameCount_Function(remote,rmiContext); 
 		}
 
 	};

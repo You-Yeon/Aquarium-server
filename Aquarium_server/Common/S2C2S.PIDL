@@ -12,4 +12,6 @@ global S2C2S 1000
 
     Room_Appear([in] int hostID, [in] std::wstring id, [in] int character_num, [in] std::wstring team_color, [in] int team_num);
 	Room_Disappear([in] int team_num);
+
+    GameCount();
 }
