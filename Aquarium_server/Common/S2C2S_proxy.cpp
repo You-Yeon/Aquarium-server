@@ -215,30 +215,42 @@ __msg << team_num;
 			RmiName_Room_Disappear, (::Proud::RmiID)Rmi_Room_Disappear);
 	}
         
-	bool Proxy::GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )	{
+	bool Proxy::GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameCount;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameStartInfo;
 __msg.Write(__msgid); 
 	
+__msg << px;
+__msg << py;
+__msg << pz;
+__msg << rx;
+__msg << ry;
+__msg << rz;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_GameCount, (::Proud::RmiID)Rmi_GameCount);
+			RmiName_GameStartInfo, (::Proud::RmiID)Rmi_GameStartInfo);
 	}
 
-	bool Proxy::GameCount ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext)  	{
+	bool Proxy::GameStartInfo ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameCount;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameStartInfo;
 __msg.Write(__msgid); 
 	
+__msg << px;
+__msg << py;
+__msg << pz;
+__msg << rx;
+__msg << ry;
+__msg << rz;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_GameCount, (::Proud::RmiID)Rmi_GameCount);
+			RmiName_GameStartInfo, (::Proud::RmiID)Rmi_GameStartInfo);
 	}
 #ifdef USE_RMI_NAME_STRING
 const PNTCHAR* Proxy::RmiName_RequestLogin =_PNT("RequestLogin");
@@ -276,9 +288,9 @@ const PNTCHAR* Proxy::RmiName_Room_Disappear =_PNT("Room_Disappear");
 const PNTCHAR* Proxy::RmiName_Room_Disappear =_PNT("");
 #endif
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_GameCount =_PNT("GameCount");
+const PNTCHAR* Proxy::RmiName_GameStartInfo =_PNT("GameStartInfo");
 #else
-const PNTCHAR* Proxy::RmiName_GameCount =_PNT("");
+const PNTCHAR* Proxy::RmiName_GameStartInfo =_PNT("");
 #endif
 const PNTCHAR* Proxy::RmiName_First = RmiName_RequestLogin;
 

@@ -19,7 +19,7 @@ namespace S2C2S {
                
     static const ::Proud::RmiID Rmi_Room_Disappear = (::Proud::RmiID)(1000+7);
                
-    static const ::Proud::RmiID Rmi_GameCount = (::Proud::RmiID)(1000+8);
+    static const ::Proud::RmiID Rmi_GameStartInfo = (::Proud::RmiID)(1000+8);
 
 	// List that has RMI ID.
 	extern ::Proud::RmiID g_RmiIDList[];

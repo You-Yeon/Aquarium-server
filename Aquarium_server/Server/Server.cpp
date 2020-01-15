@@ -202,7 +202,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             it->second->m_player_num++;
             
             // P2PGroup ID 저장
-            m_Client_Infos[remote]->m_groupID = RoomID;
+            rc->m_groupID = RoomID;
 
             break;
         }
@@ -240,7 +240,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             //m_server->JoinP2PGroup(remote, RoomID);
 
             // P2PGroup ID 저장
-            m_Client_Infos[remote]->m_groupID = RoomID;
+            rc->m_groupID = RoomID;
 
             break;
         }
@@ -280,7 +280,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
         //m_server->JoinP2PGroup(remote, RoomID);
 
         // P2PGroup ID 저장
-        m_Client_Infos[remote]->m_groupID = RoomID;
+        rc->m_groupID = RoomID;
     }
 
     int S_num = m_Group_Infos[RoomID]->m_S_Team_num;
@@ -293,22 +293,31 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
     {
         // 플레이어 팀 업데이트 및 인원 추가 업데이트
         TeamColor = L"Ruby";
-        m_Client_Infos[remote]->m_Team = L"Ruby";
+        rc->m_Team = L"Ruby";
         m_Group_Infos[RoomID]->m_R_Team_num++;
+        
+        // *** 루비 팀 체력 부여 ***
+        rc->m_humidity = 120;
     }
     else if (S_num < R_num) // 1 : 2 or 0 : 1 or 0 : 2 ( 사파이어 팀 부여 )
     {
         // 플레이어 팀 업데이트 및 인원 추가 업데이트
         TeamColor = L"Sapphire";
-        m_Client_Infos[remote]->m_Team = L"Sapphire";
+        rc->m_Team = L"Sapphire";
         m_Group_Infos[RoomID]->m_S_Team_num++;
+
+        // *** 사파이어 팀 체력 부여 ***
+        rc->m_humidity = 100;
     }
     else if (S_num == R_num) // 0 : 0 or 1 : 1 ( 사파이어 팀 부여 )
     {
         // 플레이어 팀 업데이트 및 인원 추가 업데이트
         TeamColor = L"Sapphire";
-        m_Client_Infos[remote]->m_Team = L"Sapphire";
+        rc->m_Team = L"Sapphire";
         m_Group_Infos[RoomID]->m_S_Team_num++;
+
+        // *** 사파이어 팀 체력 부여 ***
+        rc->m_humidity = 100;
     }
 
     // 루비 팀일 경우에는 2번 혹은 4번
@@ -317,6 +326,19 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
         if (m_Group_Infos[RoomID]->m_R_Team_num == 1) // 본인 클라이언트만 있을 경우
         {
             m_Client_Infos[remote]->m_TeamNum = 2; // 2번 즉, 맨 앞
+
+            // ** 리스폰 좌표 설정 **
+            
+            // 위치
+            rc->m_R_posX = -112;
+            rc->m_R_posY = 0;
+            rc->m_R_posZ = 85;
+
+            // 방향
+            rc->m_R_rotX = 0;
+            rc->m_R_rotY = -237;
+            rc->m_R_rotZ = 0;
+
         }
 
         else // 같은 팀원이 있을 경우
@@ -328,11 +350,38 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
                     if (m_Client_Infos[it]->m_TeamNum == 2) // 같은 팀원의 번호가 2일 경우
                     {
                         m_Client_Infos[remote]->m_TeamNum = 4; // 본인은 4번으로
+
+                        // ** 리스폰 좌표 설정 **
+
+                        // 위치
+                        rc->m_R_posX = -112;
+                        rc->m_R_posY = 0;
+                        rc->m_R_posZ = 80;
+
+                        // 방향
+                        rc->m_R_rotX = 0;
+                        rc->m_R_rotY = -290;
+                        rc->m_R_rotZ = 0;
+
                         break;
                     }
                     else if (m_Client_Infos[it]->m_TeamNum == 4) // 같은 팀원의 번호가 4일 경우
                     {
                         m_Client_Infos[remote]->m_TeamNum = 2; // 본인은 2번으로
+
+                        // ** 리스폰 좌표 설정 **
+
+                        // 위치
+                        rc->m_R_posX = -112;
+                        rc->m_R_posY = 0;
+                        rc->m_R_posZ = 85;
+
+                        // 방향
+                        rc->m_R_rotX = 0;
+                        rc->m_R_rotY = -237;
+                        rc->m_R_rotZ = 0;
+
+
                         break;
                     }
                 }
@@ -346,6 +395,18 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
         if (m_Group_Infos[RoomID]->m_S_Team_num == 1) // 본인 클라이언트만 있을 경우
         {
             m_Client_Infos[remote]->m_TeamNum = 1; // 1번 즉, 맨 앞
+
+            // ** 리스폰 좌표 설정 **
+
+            // 위치
+            rc->m_R_posX = -32;
+            rc->m_R_posY = 0;
+            rc->m_R_posZ = 58;
+
+            // 방향
+            rc->m_R_rotX = 0;
+            rc->m_R_rotY = -344;
+            rc->m_R_rotZ = 0;
         }
 
         else // 같은 팀원이 있을 경우
@@ -354,16 +415,42 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             {
                 if (it != HostID_Server && m_Client_Infos[it]->m_Team.compare(L"Sapphire") == 0) // 같은 팀원의 ID를 찾자.
                 {
-                if (m_Client_Infos[it]->m_TeamNum == 1) // 같은 팀원의 번호가 2일 경우
-                {
-                    m_Client_Infos[remote]->m_TeamNum = 3; // 본인은 4번으로
-                    break;
-                }
-                else if (m_Client_Infos[it]->m_TeamNum == 3) // 같은 팀원의 번호가 4일 경우
-                {
-                    m_Client_Infos[remote]->m_TeamNum = 1; // 본인은 2번으로
-                    break;
-                }
+                    if (m_Client_Infos[it]->m_TeamNum == 1) // 같은 팀원의 번호가 1일 경우
+                    {
+                        m_Client_Infos[remote]->m_TeamNum = 3; // 본인은 3번으로
+
+                        // ** 리스폰 좌표 설정 **
+
+                        // 위치
+                        rc->m_R_posX = -28;
+                        rc->m_R_posY = 0;
+                        rc->m_R_posZ = 58;
+
+                        // 방향
+                        rc->m_R_rotX = 0;
+                        rc->m_R_rotY = -368;
+                        rc->m_R_rotZ = 0;
+
+                        break;
+                    }
+                    else if (m_Client_Infos[it]->m_TeamNum == 3) // 같은 팀원의 번호가 3일 경우
+                    {
+                        m_Client_Infos[remote]->m_TeamNum = 1; // 본인은 1번으로
+
+                        // ** 리스폰 좌표 설정 **
+
+                        // 위치
+                        rc->m_R_posX = -32;
+                        rc->m_R_posY = 0;
+                        rc->m_R_posZ = 58;
+
+                        // 방향
+                        rc->m_R_rotX = 0;
+                        rc->m_R_rotY = -344;
+                        rc->m_R_rotZ = 0;
+
+                        break;
+                    }
                 }
             }
         }
@@ -404,10 +491,13 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
                         (HostID)it->first, rc->m_userID, rc->m_character, rc->m_Team, rc->m_TeamNum);
                 }
 
-                // 팀 인원 수가 최대 인원수로 될 경우, 게임 카운트 시작.
+                // 1. 팀 인원 수가 최대 인원수로 될 경우, 게임 카운트 시작.
+                // 2. 게임 캐릭터의 리스폰 정보를 줌.
                 if (m_Group_Infos[RoomID]->m_player_num == max_player_num)
                 {
-                    m_proxy.GameCount((HostID)member, RmiContext::ReliableSend);
+                    m_proxy.GameStartInfo((HostID)member, RmiContext::ReliableSend,
+                        rc->m_R_posX, rc->m_R_posY, rc->m_R_posZ,
+                        rc->m_R_rotX, rc->m_R_rotY, rc->m_R_rotZ);
                 }
             }
         }

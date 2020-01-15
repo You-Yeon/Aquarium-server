@@ -633,7 +633,7 @@ namespace S2C2S {
 					}
 				}
 				break;
-			case Rmi_GameCount:
+			case Rmi_GameStartInfo:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -651,27 +651,49 @@ namespace S2C2S {
 			            return true;
 			        }
 			
-					m_core->PostCheckReadMessage(__msg,RmiName_GameCount);
+					float px; __msg >> px;
+					float py; __msg >> py;
+					float pz; __msg >> pz;
+					float rx; __msg >> rx;
+					float ry; __msg >> ry;
+					float rz; __msg >> rz;
+					m_core->PostCheckReadMessage(__msg,RmiName_GameStartInfo);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
-									
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_GameCount, 
-							RmiName_GameCount,parameterString);
+						::Proud::AppendTextOut(parameterString,px);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,py);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,pz);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,rx);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,ry);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,rz);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_GameStartInfo, 
+							RmiName_GameStartInfo,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameCount, 
-							RmiName_GameCount, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameStartInfo, 
+							RmiName_GameStartInfo, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameCount, 
-							RmiName_GameCount, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameStartInfo, 
+							RmiName_GameStartInfo, _PNT(""));
 			#endif
 					}
 						
@@ -679,8 +701,8 @@ namespace S2C2S {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_GameCount;
-						summary.m_rmiName = RmiName_GameCount;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_GameStartInfo;
+						summary.m_rmiName = RmiName_GameStartInfo;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -689,19 +711,19 @@ namespace S2C2S {
 					}
 						
 					// Call this method.
-					bool __ret = GameCount (remote,ctx  );
+					bool __ret = GameStartInfo (remote,ctx , px, py, pz, rx, ry, rz );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_GameCount);
+						m_core->ShowNotImplementedRmiWarning(RmiName_GameStartInfo);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_GameCount;
-						summary.m_rmiName = RmiName_GameCount;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_GameStartInfo;
+						summary.m_rmiName = RmiName_GameStartInfo;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -759,9 +781,9 @@ __fail:
 	const PNTCHAR* Stub::RmiName_Room_Disappear =_PNT("");
 	#endif
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_GameCount =_PNT("GameCount");
+	const PNTCHAR* Stub::RmiName_GameStartInfo =_PNT("GameStartInfo");
 	#else
-	const PNTCHAR* Stub::RmiName_GameCount =_PNT("");
+	const PNTCHAR* Stub::RmiName_GameStartInfo =_PNT("");
 	#endif
 	const PNTCHAR* Stub::RmiName_First = RmiName_RequestLogin;
 

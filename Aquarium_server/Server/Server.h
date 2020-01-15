@@ -48,11 +48,12 @@ public:
 	std::wstring m_Team; // 유저의 팀 정보
 	int m_TeamNum; // 유저의 팀 번호 ( * 리스폰 위치와 대기실 순서 )
 	MyCharacter m_character; // 유저의 캐릭터 종류 정보
-	float m_humidity; // 유저의 습도 ( * 체력 )
-	float m_rspX, m_rspY, m_rspZ; // 유저의 리스폰 좌표
+	int m_humidity; // 유저의 습도 ( * 체력 )
+	float m_R_posX, m_R_posY, m_R_posZ; // 유저의 리스폰 위치 값
+	float m_R_rotX, m_R_rotY, m_R_rotZ; // 유저의 리스폰 방향 값
 	float m_posX, m_posY, m_posZ; // 유저의 위치 값
+	float m_rotX, m_rotY, m_rotZ; // 유저의 방향 값
 	float m_velX, m_velY, m_velZ; // 유저의 속력 값
-	float m_angleX, m_angleY; // 유저의 회전 값
 
 };
 

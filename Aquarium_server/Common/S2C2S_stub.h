@@ -91,15 +91,15 @@ namespace S2C2S {
 #define CALL_S2C2S_Room_Disappear Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num)
 #define PARAM_S2C2S_Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num)
                
-		virtual bool GameCount ( ::Proud::HostID, ::Proud::RmiContext& )		{ 
+		virtual bool GameStartInfo ( ::Proud::HostID, ::Proud::RmiContext& , const float & , const float & , const float & , const float & , const float & , const float & )		{ 
 			return false;
 		} 
 
-#define DECRMI_S2C2S_GameCount bool GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) PN_OVERRIDE
+#define DECRMI_S2C2S_GameStartInfo bool GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz) PN_OVERRIDE
 
-#define DEFRMI_S2C2S_GameCount(DerivedClass) bool DerivedClass::GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
-#define CALL_S2C2S_GameCount GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
-#define PARAM_S2C2S_GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )
+#define DEFRMI_S2C2S_GameStartInfo(DerivedClass) bool DerivedClass::GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)
+#define CALL_S2C2S_GameStartInfo GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)
+#define PARAM_S2C2S_GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)
  
 		virtual bool ProcessReceivedMessage(::Proud::CReceivedMessage &pa, void* hostTag) PN_OVERRIDE;
 		static const PNTCHAR* RmiName_RequestLogin;
@@ -109,7 +109,7 @@ namespace S2C2S {
 		static const PNTCHAR* RmiName_LeaveGameRoom;
 		static const PNTCHAR* RmiName_Room_Appear;
 		static const PNTCHAR* RmiName_Room_Disappear;
-		static const PNTCHAR* RmiName_GameCount;
+		static const PNTCHAR* RmiName_GameStartInfo;
 		static const PNTCHAR* RmiName_First;
 		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; }
 		virtual int GetRmiIDListCount() PN_OVERRIDE { return g_RmiIDListCount; }
@@ -184,12 +184,12 @@ namespace S2C2S {
 		}
 
                
-		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& ) > GameCount_Function;
-		virtual bool GameCount ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) 
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const float & , const float & , const float & , const float & , const float & , const float & ) > GameStartInfo_Function;
+		virtual bool GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz) 
 		{ 
-			if (GameCount_Function==nullptr) 
+			if (GameStartInfo_Function==nullptr) 
 				return true; 
-			return GameCount_Function(remote,rmiContext); 
+			return GameStartInfo_Function(remote,rmiContext, px, py, pz, rx, ry, rz); 
 		}
 
 	};

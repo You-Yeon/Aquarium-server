@@ -23,7 +23,7 @@ namespace S2C2S {
                
 		Rmi_Room_Disappear,
                
-		Rmi_GameCount,
+		Rmi_GameStartInfo,
 	};
 
 	int g_RmiIDListCount = 8;
