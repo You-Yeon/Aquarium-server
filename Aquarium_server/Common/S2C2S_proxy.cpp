@@ -215,14 +215,42 @@ __msg << team_num;
 			RmiName_Room_Disappear, (::Proud::RmiID)Rmi_Room_Disappear);
 	}
         
-	bool Proxy::GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)	{
+	bool Proxy::GameStart ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext )	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameStartInfo;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameStart;
 __msg.Write(__msgid); 
 	
+		
+		return RmiSend(&remote,1,rmiContext,__msg,
+			RmiName_GameStart, (::Proud::RmiID)Rmi_GameStart);
+	}
+
+	bool Proxy::GameStart ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext)  	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameStart;
+__msg.Write(__msgid); 
+	
+		
+		return RmiSend(remotes,remoteCount,rmiContext,__msg,
+			RmiName_GameStart, (::Proud::RmiID)Rmi_GameStart);
+	}
+        
+	bool Proxy::PlayerInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_PlayerInfo;
+__msg.Write(__msgid); 
+	
+__msg << team_num;
+__msg << character_num;
 __msg << px;
 __msg << py;
 __msg << pz;
@@ -231,17 +259,19 @@ __msg << ry;
 __msg << rz;
 		
 		return RmiSend(&remote,1,rmiContext,__msg,
-			RmiName_GameStartInfo, (::Proud::RmiID)Rmi_GameStartInfo);
+			RmiName_PlayerInfo, (::Proud::RmiID)Rmi_PlayerInfo);
 	}
 
-	bool Proxy::GameStartInfo ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)  	{
+	bool Proxy::PlayerInfo ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)  	{
 		::Proud::CMessage __msg;
 __msg.UseInternalBuffer();
 __msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
 
-::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_GameStartInfo;
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_PlayerInfo;
 __msg.Write(__msgid); 
 	
+__msg << team_num;
+__msg << character_num;
 __msg << px;
 __msg << py;
 __msg << pz;
@@ -250,7 +280,7 @@ __msg << ry;
 __msg << rz;
 		
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
-			RmiName_GameStartInfo, (::Proud::RmiID)Rmi_GameStartInfo);
+			RmiName_PlayerInfo, (::Proud::RmiID)Rmi_PlayerInfo);
 	}
 #ifdef USE_RMI_NAME_STRING
 const PNTCHAR* Proxy::RmiName_RequestLogin =_PNT("RequestLogin");
@@ -288,9 +318,14 @@ const PNTCHAR* Proxy::RmiName_Room_Disappear =_PNT("Room_Disappear");
 const PNTCHAR* Proxy::RmiName_Room_Disappear =_PNT("");
 #endif
 #ifdef USE_RMI_NAME_STRING
-const PNTCHAR* Proxy::RmiName_GameStartInfo =_PNT("GameStartInfo");
+const PNTCHAR* Proxy::RmiName_GameStart =_PNT("GameStart");
 #else
-const PNTCHAR* Proxy::RmiName_GameStartInfo =_PNT("");
+const PNTCHAR* Proxy::RmiName_GameStart =_PNT("");
+#endif
+#ifdef USE_RMI_NAME_STRING
+const PNTCHAR* Proxy::RmiName_PlayerInfo =_PNT("PlayerInfo");
+#else
+const PNTCHAR* Proxy::RmiName_PlayerInfo =_PNT("");
 #endif
 const PNTCHAR* Proxy::RmiName_First = RmiName_RequestLogin;
 

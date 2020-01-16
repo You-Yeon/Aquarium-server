@@ -471,9 +471,10 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             {
                 cout << "member : " << member << endl;
 
+                auto& other = m_Client_Infos.find(member)->second; // 멤버 클라이언트 정보
+
                 if (member != it->first) // 기존 클라이언트일 경우
                 {
-                    auto& other = m_Client_Infos.find(member)->second; // 기존 클라이언트 정보
 
                     // 기존 클라이언트에게 새 클라이언트를 알림
                     m_proxy.Room_Appear((HostID)member, RmiContext::ReliableSend,
@@ -491,13 +492,43 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
                         (HostID)it->first, rc->m_userID, rc->m_character, rc->m_Team, rc->m_TeamNum);
                 }
 
-                // 1. 팀 인원 수가 최대 인원수로 될 경우, 게임 카운트 시작.
-                // 2. 게임 캐릭터의 리스폰 정보를 줌.
+                // 팀 인원 수가 최대 인원수로 될 경우, 게임 카운트 시작.
                 if (m_Group_Infos[RoomID]->m_player_num == max_player_num)
                 {
-                    m_proxy.GameStartInfo((HostID)member, RmiContext::ReliableSend,
-                        rc->m_R_posX, rc->m_R_posY, rc->m_R_posZ,
-                        rc->m_R_rotX, rc->m_R_rotY, rc->m_R_rotZ);
+                    // 게임 카운트 시작.
+                    m_proxy.GameStart((HostID)member, RmiContext::ReliableSend);
+                }
+            }
+        }
+
+    }
+
+    // 1. 본인 게임 캐릭터의 리스폰 정보를 줌.
+    // 2. 다른 게임 캐릭터의 리스폰 정보를 줌.
+    if (true == m_server->GetP2PGroupInfo(RoomID, m_playerGroups.find(RoomID)->second))
+    {
+        // 방에 있는 멤버들에게
+        for (auto member : m_playerGroups.find(RoomID)->second.m_members)
+        {
+            if (member != HostID_Server) // 서버는 제외
+            {
+                auto& my = m_Client_Infos.find(member)->second; // 멤버 클라이언트 정보
+
+                // 본인 캐릭터의 리스폰 정보를 준다.
+                m_proxy.PlayerInfo((HostID)member, RmiContext::ReliableSend, my->m_TeamNum, my->m_character,
+                    my->m_R_posX, my->m_R_posY, my->m_R_posZ,
+                    my->m_R_rotX, my->m_R_rotY, my->m_R_rotZ);
+
+                // 방에 있는 나를 제외한 멤버들에게
+                for (auto other_member : m_playerGroups.find(RoomID)->second.m_members)
+                {
+                    if (member != HostID_Server && member != other_member) // 서버와 본인 제외
+                    {
+                        // 본인 캐릭터의 리스폰 정보를 준다.
+                        m_proxy.PlayerInfo((HostID)other_member, RmiContext::ReliableSend, my->m_TeamNum, my->m_character,
+                            my->m_R_posX, my->m_R_posY, my->m_R_posZ,
+                            my->m_R_rotX, my->m_R_rotY, my->m_R_rotZ);
+                    }
                 }
             }
         }

@@ -31,8 +31,10 @@ namespace S2C2S {
 	virtual bool Room_Appear ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & hostID, const std::wstring & id, const int & character_num, const std::wstring & team_color, const int & team_num)   PN_SEALED;  
 	virtual bool Room_Disappear ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num) PN_SEALED; 
 	virtual bool Room_Disappear ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & team_num)   PN_SEALED;  
-	virtual bool GameStartInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz) PN_SEALED; 
-	virtual bool GameStartInfo ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)   PN_SEALED;  
+	virtual bool GameStart ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext ) PN_SEALED; 
+	virtual bool GameStart ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext)   PN_SEALED;  
+	virtual bool PlayerInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz) PN_SEALED; 
+	virtual bool PlayerInfo ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)   PN_SEALED;  
 static const PNTCHAR* RmiName_RequestLogin;
 static const PNTCHAR* RmiName_NotifyLoginSuccess;
 static const PNTCHAR* RmiName_NotifyLoginFailed;
@@ -40,7 +42,8 @@ static const PNTCHAR* RmiName_JoinGameRoom;
 static const PNTCHAR* RmiName_LeaveGameRoom;
 static const PNTCHAR* RmiName_Room_Appear;
 static const PNTCHAR* RmiName_Room_Disappear;
-static const PNTCHAR* RmiName_GameStartInfo;
+static const PNTCHAR* RmiName_GameStart;
+static const PNTCHAR* RmiName_PlayerInfo;
 static const PNTCHAR* RmiName_First;
 		Proxy()
 		{

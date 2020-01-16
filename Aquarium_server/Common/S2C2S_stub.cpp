@@ -633,7 +633,7 @@ namespace S2C2S {
 					}
 				}
 				break;
-			case Rmi_GameStartInfo:
+			case Rmi_GameStart:
 				{
 					::Proud::RmiContext ctx;
 					ctx.m_rmiID = __rmiID;
@@ -651,19 +651,107 @@ namespace S2C2S {
 			            return true;
 			        }
 			
-					float px; __msg >> px;
-					float py; __msg >> py;
-					float pz; __msg >> pz;
-					float rx; __msg >> rx;
-					float ry; __msg >> ry;
-					float rz; __msg >> rz;
-					m_core->PostCheckReadMessage(__msg,RmiName_GameStartInfo);
+					m_core->PostCheckReadMessage(__msg,RmiName_GameStart);
 					
 			
 					if(m_enableNotifyCallFromStub && !m_internalUse)
 					{
 						::Proud::String parameterString;
 						
+									
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_GameStart, 
+							RmiName_GameStart,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameStart, 
+							RmiName_GameStart, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameStart, 
+							RmiName_GameStart, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_GameStart;
+						summary.m_rmiName = RmiName_GameStart;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = GameStart (remote,ctx  );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_GameStart);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_GameStart;
+						summary.m_rmiName = RmiName_GameStart;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
+			case Rmi_PlayerInfo:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					int team_num; __msg >> team_num;
+					int character_num; __msg >> character_num;
+					float px; __msg >> px;
+					float py; __msg >> py;
+					float pz; __msg >> pz;
+					float rx; __msg >> rx;
+					float ry; __msg >> ry;
+					float rz; __msg >> rz;
+					m_core->PostCheckReadMessage(__msg,RmiName_PlayerInfo);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,team_num);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,character_num);	
+										
+						parameterString += _PNT(", ");
 						::Proud::AppendTextOut(parameterString,px);	
 										
 						parameterString += _PNT(", ");
@@ -681,19 +769,19 @@ namespace S2C2S {
 						parameterString += _PNT(", ");
 						::Proud::AppendTextOut(parameterString,rz);	
 						
-						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_GameStartInfo, 
-							RmiName_GameStartInfo,parameterString);
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_PlayerInfo, 
+							RmiName_PlayerInfo,parameterString);
 			
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameStartInfo, 
-							RmiName_GameStartInfo, parameterString);
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_PlayerInfo, 
+							RmiName_PlayerInfo, parameterString);
 			#endif
 					}
 					else if(!m_internalUse)
 					{
 			#ifdef VIZAGENT
-						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_GameStartInfo, 
-							RmiName_GameStartInfo, _PNT(""));
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_PlayerInfo, 
+							RmiName_PlayerInfo, _PNT(""));
 			#endif
 					}
 						
@@ -701,8 +789,8 @@ namespace S2C2S {
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::BeforeRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_GameStartInfo;
-						summary.m_rmiName = RmiName_GameStartInfo;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_PlayerInfo;
+						summary.m_rmiName = RmiName_PlayerInfo;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						BeforeRmiInvocation(summary);
@@ -711,19 +799,19 @@ namespace S2C2S {
 					}
 						
 					// Call this method.
-					bool __ret = GameStartInfo (remote,ctx , px, py, pz, rx, ry, rz );
+					bool __ret = PlayerInfo (remote,ctx , team_num, character_num, px, py, pz, rx, ry, rz );
 						
 					if(__ret==false)
 					{
 						// Error: RMI function that a user did not create has been called. 
-						m_core->ShowNotImplementedRmiWarning(RmiName_GameStartInfo);
+						m_core->ShowNotImplementedRmiWarning(RmiName_PlayerInfo);
 					}
 						
 					if(!m_internalUse && m_enableStubProfiling)
 					{
 						::Proud::AfterRmiSummary summary;
-						summary.m_rmiID = (::Proud::RmiID)Rmi_GameStartInfo;
-						summary.m_rmiName = RmiName_GameStartInfo;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_PlayerInfo;
+						summary.m_rmiName = RmiName_PlayerInfo;
 						summary.m_hostID = remote;
 						summary.m_hostTag = hostTag;
 						int64_t __t1;
@@ -781,9 +869,14 @@ __fail:
 	const PNTCHAR* Stub::RmiName_Room_Disappear =_PNT("");
 	#endif
 	#ifdef USE_RMI_NAME_STRING
-	const PNTCHAR* Stub::RmiName_GameStartInfo =_PNT("GameStartInfo");
+	const PNTCHAR* Stub::RmiName_GameStart =_PNT("GameStart");
 	#else
-	const PNTCHAR* Stub::RmiName_GameStartInfo =_PNT("");
+	const PNTCHAR* Stub::RmiName_GameStart =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_PlayerInfo =_PNT("PlayerInfo");
+	#else
+	const PNTCHAR* Stub::RmiName_PlayerInfo =_PNT("");
 	#endif
 	const PNTCHAR* Stub::RmiName_First = RmiName_RequestLogin;
 
