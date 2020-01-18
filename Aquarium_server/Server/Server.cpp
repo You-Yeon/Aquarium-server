@@ -50,7 +50,8 @@ void Aquarium_server::Run() // 런타임 함수 정의
             {
                 // P2P 방 삭제
                 m_Group_Infos.erase(GroupID);
-                m_playerGroups.erase(GroupID);
+                //m_playerGroups.erase(GroupID);
+                m_playerGroups_TEST.erase(GroupID);
             }
             // 방에 나 이외에 다른 사람도 있었다면 P2P 방을 계속 보관.
             else if (m_Group_Infos[GroupID]->m_player_num > 1)
@@ -67,16 +68,17 @@ void Aquarium_server::Run() // 런타임 함수 정의
                 }
 
                 // 멤버 삭제
-                m_playerGroups[GroupID].m_members.RemoveOneByValue(info->m_HostID);
+                //m_playerGroups[GroupID].m_members.RemoveOneByValue(info->m_HostID);
+                m_playerGroups_TEST[GroupID].RemoveOneByValue(info->m_HostID);
 
                 // P2P 방에 있는 클라이언트에게 게임 방 퇴장 알림.
-                if (true == m_server->GetP2PGroupInfo(GroupID, m_playerGroups.find(GroupID)->second))
-                {
-                    for (auto member : m_playerGroups.find(GroupID)->second.m_members)
+                //if (true == m_server->GetP2PGroupInfo(GroupID, m_playerGroups.find(GroupID)->second))
+                //{
+                    for (auto member : m_playerGroups_TEST.find(GroupID)->second)
                     {
                         m_proxy.Room_Disappear(member, RmiContext::ReliableSend, m_Client_Infos[info->m_HostID]->m_TeamNum);
                     }
-                }
+                //}
             }
         }
 
@@ -109,17 +111,19 @@ void Aquarium_server::Run() // 런타임 함수 정의
 
     m_Group_Infos[newP2PID] = newGroupInfo;
 
-    // P2P 방 생성
-    CP2PGroup newP2PGroup;
-    newP2PGroup.m_groupHostID = newP2PID;
+    //// P2P 방 생성
+    //CP2PGroup newP2PGroup;
+    //newP2PGroup.m_groupHostID = newP2PID;
 
-    // 서버 P2P Join (* 클라이언트 정보 업데이트를 위해서)
-    // 대기방에 들어오는 클라이언트에게 다른 클라이언트 정보 업데이트할 때
-    newP2PGroup.m_members.Add(HostID_Server); 
+    //// 서버 P2P Join (* 클라이언트 정보 업데이트를 위해서)
+    //// 대기방에 들어오는 클라이언트에게 다른 클라이언트 정보 업데이트할 때
+    //newP2PGroup.m_members.Add(HostID_Server); 
 
-    m_playerGroups[newP2PID] = newP2PGroup;
+    //m_playerGroups[newP2PID] = newP2PGroup;
 
-    //m_server->JoinP2PGroup(HostID_Server, newP2PID);
+    m_playerGroups_TEST[newP2PID].Add(HostID_Server);
+
+    m_server->JoinP2PGroup(HostID_Server, newP2PID);
 
     // Hit return to exit
     cout << "Server started. Hit return to exit.\n";
@@ -192,11 +196,12 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
 
             RoomID = HostID(it->first);
 
-            // P2P 그룹에 추가
-            // 해당 클라이언트는 P2PMemberJoinHandler 이벤트 콜백
-            m_playerGroups.find(RoomID)->second.m_members.Add(remote);
+            //// P2P 그룹에 추가
+            //// 해당 클라이언트는 P2PMemberJoinHandler 이벤트 콜백
+            //m_playerGroups.find(RoomID)->second.m_members.Add(remote);
+            m_playerGroups_TEST[RoomID].Add(remote);
 
-            //m_server->JoinP2PGroup(remote, RoomID);
+            m_server->JoinP2PGroup(remote, RoomID);
 
             // 인원 수 증가
             it->second->m_player_num++;
@@ -227,17 +232,19 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             CP2PGroup newP2PGroup;
             newP2PGroup.m_groupHostID = RoomID;
 
-            // 서버 P2P Join (* 클라이언트 정보 업데이트를 위해서)
-            // 대기방에 들어오는 클라이언트에게 다른 클라이언트 정보 업데이트할 때
-            newP2PGroup.m_members.Add(HostID_Server);
+            //// 서버 P2P Join (* 클라이언트 정보 업데이트를 위해서)
+            //// 대기방에 들어오는 클라이언트에게 다른 클라이언트 정보 업데이트할 때
+            //newP2PGroup.m_members.Add(HostID_Server);
 
-            // 해당 클라이언트는 P2PMemberJoinHandler 이벤트 콜백
-            newP2PGroup.m_members.Add(remote); // 클라이언트 ID 추가
+            //// 해당 클라이언트는 P2PMemberJoinHandler 이벤트 콜백
+            //newP2PGroup.m_members.Add(remote); // 클라이언트 ID 추가
 
-            m_playerGroups[RoomID] = newP2PGroup;
+            //m_playerGroups[RoomID] = newP2PGroup;
+            m_playerGroups_TEST[RoomID].Add(HostID_Server);
+            m_playerGroups_TEST[RoomID].Add(remote);
 
-            //m_server->JoinP2PGroup(HostID_Server, RoomID);
-            //m_server->JoinP2PGroup(remote, RoomID);
+            m_server->JoinP2PGroup(HostID_Server, RoomID);
+            m_server->JoinP2PGroup(remote, RoomID);
 
             // P2PGroup ID 저장
             rc->m_groupID = RoomID;
@@ -267,17 +274,19 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
         CP2PGroup newP2PGroup;
         newP2PGroup.m_groupHostID = RoomID;
 
-        // 서버 P2P Join (* 클라이언트 정보 업데이트를 위해서)
-        // 대기방에 들어오는 클라이언트에게 다른 클라이언트 정보 업데이트할 때
-        newP2PGroup.m_members.Add(HostID_Server);
+        //// 서버 P2P Join (* 클라이언트 정보 업데이트를 위해서)
+        //// 대기방에 들어오는 클라이언트에게 다른 클라이언트 정보 업데이트할 때
+        //newP2PGroup.m_members.Add(HostID_Server);
 
-        // 해당 클라이언트는 P2PMemberJoinHandler 이벤트 콜백
-        newP2PGroup.m_members.Add(remote); // 클라이언트 ID 추가
+        //// 해당 클라이언트는 P2PMemberJoinHandler 이벤트 콜백
+        //newP2PGroup.m_members.Add(remote); // 클라이언트 ID 추가
 
-        m_playerGroups[RoomID] = newP2PGroup;
+        //m_playerGroups[RoomID] = newP2PGroup;
+        m_playerGroups_TEST[RoomID].Add(HostID_Server);
+        m_playerGroups_TEST[RoomID].Add(remote);
 
-        //m_server->JoinP2PGroup(HostID_Server, RoomID);
-        //m_server->JoinP2PGroup(remote, RoomID);
+        m_server->JoinP2PGroup(HostID_Server, RoomID);
+        m_server->JoinP2PGroup(remote, RoomID);
 
         // P2PGroup ID 저장
         rc->m_groupID = RoomID;
@@ -343,7 +352,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
 
         else // 같은 팀원이 있을 경우
         {
-            for (auto it : m_playerGroups[RoomID].m_members) // 같은 방 팀원의 ID에서
+            for (auto it : m_playerGroups_TEST[RoomID]) // 같은 방 팀원의 ID에서
             {
                 if (it != HostID_Server && m_Client_Infos[it]->m_Team.compare(L"Ruby") == 0) // 같은 팀원의 ID를 찾자.
                 {
@@ -411,7 +420,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
 
         else // 같은 팀원이 있을 경우
         {
-            for (auto it : m_playerGroups[RoomID].m_members) // 같은 방 팀원의 ID에서
+            for (auto it : m_playerGroups_TEST[RoomID]) // 같은 방 팀원의 ID에서
             {
                 if (it != HostID_Server && m_Client_Infos[it]->m_Team.compare(L"Sapphire") == 0) // 같은 팀원의 ID를 찾자.
                 {
@@ -462,10 +471,10 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
     // 받은 플레이어 캐릭터 정보를 업데이트한다.
     // 기존 클라이언트 목록을 순회하면서, 기존 클라이언트에게 새 클라이언트의 등장을 알림.
     // 마찬가지로, 새 클라이언트에게 기존 클라이언트의 등장을 알림.
-    if (true == m_server->GetP2PGroupInfo(RoomID, m_playerGroups.find(RoomID)->second))
-    {
+    //if (true == m_server->GetP2PGroupInfo(RoomID, m_playerGroups.find(RoomID)->second))
+    //{
         // 팀 방에 입장하고 플레이어 UI 처리
-        for (auto member : m_playerGroups.find(RoomID)->second.m_members)
+        for (auto member : m_playerGroups_TEST[RoomID])
         {
             if (member != HostID_Server) // 서버는 제외
             {
@@ -501,14 +510,14 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             }
         }
 
-    }
+    //}
 
     // 1. 본인 게임 캐릭터의 리스폰 정보를 줌.
     // 2. 다른 게임 캐릭터의 리스폰 정보를 줌.
-    if (true == m_server->GetP2PGroupInfo(RoomID, m_playerGroups.find(RoomID)->second))
-    {
+    //if (true == m_server->GetP2PGroupInfo(RoomID, m_playerGroups.find(RoomID)->second))
+    //{
         // 방에 있는 멤버들에게
-        for (auto member : m_playerGroups.find(RoomID)->second.m_members)
+        for (auto member : m_playerGroups_TEST[RoomID])
         {
             if (member != HostID_Server) // 서버는 제외
             {
@@ -520,7 +529,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
                     my->m_R_rotX, my->m_R_rotY, my->m_R_rotZ);
 
                 // 방에 있는 나를 제외한 멤버들에게
-                for (auto other_member : m_playerGroups.find(RoomID)->second.m_members)
+                for (auto other_member : m_playerGroups_TEST[RoomID])
                 {
                     if (member != HostID_Server && member != other_member) // 서버와 본인 제외
                     {
@@ -533,7 +542,7 @@ DEFRMI_S2C2S_JoinGameRoom(Aquarium_server)
             }
         }
 
-    }
+    //}
 
     return true;
 
@@ -571,7 +580,8 @@ DEFRMI_S2C2S_LeaveGameRoom(Aquarium_server)
     {
         // P2P 방 삭제
         m_Group_Infos.erase(GroupID);
-        m_playerGroups.erase(GroupID);
+        //m_playerGroups.erase(GroupID);
+        m_playerGroups_TEST.erase(GroupID);
     }
     // 방에 나 이외에 다른 사람도 있었다면 P2P 방을 계속 보관.
     else if (m_Group_Infos[GroupID]->m_player_num > 1)
@@ -588,17 +598,40 @@ DEFRMI_S2C2S_LeaveGameRoom(Aquarium_server)
         }
             
         // 멤버 삭제
-        m_playerGroups[GroupID].m_members.RemoveOneByValue(remote);
+        m_playerGroups_TEST[GroupID].RemoveOneByValue(remote);
 
         // P2P 방에 있는 클라이언트에게 게임 방 퇴장 알림.
-        if (true == m_server->GetP2PGroupInfo(GroupID, m_playerGroups.find(GroupID)->second))
-        {
-            for (auto member : m_playerGroups.find(GroupID)->second.m_members)
+        //if (true == m_server->GetP2PGroupInfo(GroupID, m_playerGroups.find(GroupID)->second))
+        //{
+            for (auto member : m_playerGroups_TEST[GroupID])
             {
                 m_proxy.Room_Disappear(member, RmiContext::ReliableSend, m_Client_Infos[remote]->m_TeamNum);
             }
-        }
+        //}
     }
+
+    return true;
+}
+
+DEFRMI_S2C2S_Player_Move(Aquarium_server)
+{
+
+    CriticalSectionLock lock(m_critSec, true);
+
+    // 클라이언트 데이터에 있는지 확인
+    auto it = m_Client_Infos.find(remote);
+    if (it == m_Client_Infos.end())
+    {
+        // 없으면 리턴
+        return true;
+    }
+
+    //  클라이언트 정보 업데이트
+    auto& rc = it->second;
+
+    rc->m_move = m_move;
+    rc->m_rotate = m_rotate;
+    rc->m_mouseX = m_mouseX;
 
     return true;
 }

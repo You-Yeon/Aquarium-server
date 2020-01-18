@@ -35,6 +35,8 @@ namespace S2C2S {
 	virtual bool GameStart ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext)   PN_SEALED;  
 	virtual bool PlayerInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz) PN_SEALED; 
 	virtual bool PlayerInfo ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)   PN_SEALED;  
+	virtual bool Player_Move ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX) PN_SEALED; 
+	virtual bool Player_Move ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX)   PN_SEALED;  
 static const PNTCHAR* RmiName_RequestLogin;
 static const PNTCHAR* RmiName_NotifyLoginSuccess;
 static const PNTCHAR* RmiName_NotifyLoginFailed;
@@ -44,6 +46,7 @@ static const PNTCHAR* RmiName_Room_Appear;
 static const PNTCHAR* RmiName_Room_Disappear;
 static const PNTCHAR* RmiName_GameStart;
 static const PNTCHAR* RmiName_PlayerInfo;
+static const PNTCHAR* RmiName_Player_Move;
 static const PNTCHAR* RmiName_First;
 		Proxy()
 		{

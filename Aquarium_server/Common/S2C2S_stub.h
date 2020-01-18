@@ -110,6 +110,16 @@ namespace S2C2S {
 #define DEFRMI_S2C2S_PlayerInfo(DerivedClass) bool DerivedClass::PlayerInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)
 #define CALL_S2C2S_PlayerInfo PlayerInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)
 #define PARAM_S2C2S_PlayerInfo ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & team_num, const int & character_num, const float & px, const float & py, const float & pz, const float & rx, const float & ry, const float & rz)
+               
+		virtual bool Player_Move ( ::Proud::HostID, ::Proud::RmiContext& , const int & , const float & , const float & , const float & )		{ 
+			return false;
+		} 
+
+#define DECRMI_S2C2S_Player_Move bool Player_Move ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX) PN_OVERRIDE
+
+#define DEFRMI_S2C2S_Player_Move(DerivedClass) bool DerivedClass::Player_Move ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX)
+#define CALL_S2C2S_Player_Move Player_Move ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX)
+#define PARAM_S2C2S_Player_Move ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX)
  
 		virtual bool ProcessReceivedMessage(::Proud::CReceivedMessage &pa, void* hostTag) PN_OVERRIDE;
 		static const PNTCHAR* RmiName_RequestLogin;
@@ -121,6 +131,7 @@ namespace S2C2S {
 		static const PNTCHAR* RmiName_Room_Disappear;
 		static const PNTCHAR* RmiName_GameStart;
 		static const PNTCHAR* RmiName_PlayerInfo;
+		static const PNTCHAR* RmiName_Player_Move;
 		static const PNTCHAR* RmiName_First;
 		virtual ::Proud::RmiID* GetRmiIDList() PN_OVERRIDE { return g_RmiIDList; }
 		virtual int GetRmiIDListCount() PN_OVERRIDE { return g_RmiIDListCount; }
@@ -210,6 +221,15 @@ namespace S2C2S {
 			if (PlayerInfo_Function==nullptr) 
 				return true; 
 			return PlayerInfo_Function(remote,rmiContext, team_num, character_num, px, py, pz, rx, ry, rz); 
+		}
+
+               
+		std::function< bool ( ::Proud::HostID, ::Proud::RmiContext& , const int & , const float & , const float & , const float & ) > Player_Move_Function;
+		virtual bool Player_Move ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX) 
+		{ 
+			if (Player_Move_Function==nullptr) 
+				return true; 
+			return Player_Move_Function(remote,rmiContext, m_team_num, m_move, m_rotate, m_mouseX); 
 		}
 
 	};

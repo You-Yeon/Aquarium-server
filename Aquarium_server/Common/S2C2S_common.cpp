@@ -26,9 +26,11 @@ namespace S2C2S {
 		Rmi_GameStart,
                
 		Rmi_PlayerInfo,
+               
+		Rmi_Player_Move,
 	};
 
-	int g_RmiIDListCount = 9;
+	int g_RmiIDListCount = 10;
 
 }
 

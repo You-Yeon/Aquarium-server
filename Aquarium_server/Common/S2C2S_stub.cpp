@@ -823,6 +823,100 @@ namespace S2C2S {
 					}
 				}
 				break;
+			case Rmi_Player_Move:
+				{
+					::Proud::RmiContext ctx;
+					ctx.m_rmiID = __rmiID;
+					ctx.m_sentFrom=pa.GetRemoteHostID();
+					ctx.m_relayed=pa.IsRelayed();
+					ctx.m_hostTag = hostTag;
+					ctx.m_encryptMode = pa.GetEncryptMode();
+					ctx.m_compressMode = pa.GetCompressMode();
+			
+			        if(BeforeDeserialize(remote, ctx, __msg) == false)
+			        {
+			            // The user don't want to call the RMI function. 
+						// So, We fake that it has been already called.
+						__msg.SetReadOffset(__msg.GetLength());
+			            return true;
+			        }
+			
+					int m_team_num; __msg >> m_team_num;
+					float m_move; __msg >> m_move;
+					float m_rotate; __msg >> m_rotate;
+					float m_mouseX; __msg >> m_mouseX;
+					m_core->PostCheckReadMessage(__msg,RmiName_Player_Move);
+					
+			
+					if(m_enableNotifyCallFromStub && !m_internalUse)
+					{
+						::Proud::String parameterString;
+						
+						::Proud::AppendTextOut(parameterString,m_team_num);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,m_move);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,m_rotate);	
+										
+						parameterString += _PNT(", ");
+						::Proud::AppendTextOut(parameterString,m_mouseX);	
+						
+						NotifyCallFromStub(remote, (::Proud::RmiID)Rmi_Player_Move, 
+							RmiName_Player_Move,parameterString);
+			
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Player_Move, 
+							RmiName_Player_Move, parameterString);
+			#endif
+					}
+					else if(!m_internalUse)
+					{
+			#ifdef VIZAGENT
+						m_core->Viz_NotifyRecvToStub(remote, (::Proud::RmiID)Rmi_Player_Move, 
+							RmiName_Player_Move, _PNT(""));
+			#endif
+					}
+						
+					int64_t __t0 = 0;
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::BeforeRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Player_Move;
+						summary.m_rmiName = RmiName_Player_Move;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						BeforeRmiInvocation(summary);
+			
+						__t0 = ::Proud::GetPreciseCurrentTimeMs();
+					}
+						
+					// Call this method.
+					bool __ret = Player_Move (remote,ctx , m_team_num, m_move, m_rotate, m_mouseX );
+						
+					if(__ret==false)
+					{
+						// Error: RMI function that a user did not create has been called. 
+						m_core->ShowNotImplementedRmiWarning(RmiName_Player_Move);
+					}
+						
+					if(!m_internalUse && m_enableStubProfiling)
+					{
+						::Proud::AfterRmiSummary summary;
+						summary.m_rmiID = (::Proud::RmiID)Rmi_Player_Move;
+						summary.m_rmiName = RmiName_Player_Move;
+						summary.m_hostID = remote;
+						summary.m_hostTag = hostTag;
+						int64_t __t1;
+			
+						__t1 = ::Proud::GetPreciseCurrentTimeMs();
+			
+						summary.m_elapsedTime = (uint32_t)(__t1 - __t0);
+						AfterRmiInvocation(summary);
+					}
+				}
+				break;
 		default:
 			goto __fail;
 		}		
@@ -877,6 +971,11 @@ __fail:
 	const PNTCHAR* Stub::RmiName_PlayerInfo =_PNT("PlayerInfo");
 	#else
 	const PNTCHAR* Stub::RmiName_PlayerInfo =_PNT("");
+	#endif
+	#ifdef USE_RMI_NAME_STRING
+	const PNTCHAR* Stub::RmiName_Player_Move =_PNT("Player_Move");
+	#else
+	const PNTCHAR* Stub::RmiName_Player_Move =_PNT("");
 	#endif
 	const PNTCHAR* Stub::RmiName_First = RmiName_RequestLogin;
 

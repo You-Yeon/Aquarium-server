@@ -282,6 +282,40 @@ __msg << rz;
 		return RmiSend(remotes,remoteCount,rmiContext,__msg,
 			RmiName_PlayerInfo, (::Proud::RmiID)Rmi_PlayerInfo);
 	}
+        
+	bool Proxy::Player_Move ( ::Proud::HostID remote, ::Proud::RmiContext& rmiContext , const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX)	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Player_Move;
+__msg.Write(__msgid); 
+	
+__msg << m_team_num;
+__msg << m_move;
+__msg << m_rotate;
+__msg << m_mouseX;
+		
+		return RmiSend(&remote,1,rmiContext,__msg,
+			RmiName_Player_Move, (::Proud::RmiID)Rmi_Player_Move);
+	}
+
+	bool Proxy::Player_Move ( ::Proud::HostID *remotes, int remoteCount, ::Proud::RmiContext &rmiContext, const int & m_team_num, const float & m_move, const float & m_rotate, const float & m_mouseX)  	{
+		::Proud::CMessage __msg;
+__msg.UseInternalBuffer();
+__msg.SetSimplePacketMode(m_core->IsSimplePacketMode());
+
+::Proud::RmiID __msgid=(::Proud::RmiID)Rmi_Player_Move;
+__msg.Write(__msgid); 
+	
+__msg << m_team_num;
+__msg << m_move;
+__msg << m_rotate;
+__msg << m_mouseX;
+		
+		return RmiSend(remotes,remoteCount,rmiContext,__msg,
+			RmiName_Player_Move, (::Proud::RmiID)Rmi_Player_Move);
+	}
 #ifdef USE_RMI_NAME_STRING
 const PNTCHAR* Proxy::RmiName_RequestLogin =_PNT("RequestLogin");
 #else
@@ -326,6 +360,11 @@ const PNTCHAR* Proxy::RmiName_GameStart =_PNT("");
 const PNTCHAR* Proxy::RmiName_PlayerInfo =_PNT("PlayerInfo");
 #else
 const PNTCHAR* Proxy::RmiName_PlayerInfo =_PNT("");
+#endif
+#ifdef USE_RMI_NAME_STRING
+const PNTCHAR* Proxy::RmiName_Player_Move =_PNT("Player_Move");
+#else
+const PNTCHAR* Proxy::RmiName_Player_Move =_PNT("");
 #endif
 const PNTCHAR* Proxy::RmiName_First = RmiName_RequestLogin;
 

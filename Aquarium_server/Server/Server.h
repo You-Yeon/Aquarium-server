@@ -51,9 +51,9 @@ public:
 	int m_humidity; // 유저의 습도 ( * 체력 )
 	float m_R_posX, m_R_posY, m_R_posZ; // 유저의 리스폰 위치 값
 	float m_R_rotX, m_R_rotY, m_R_rotZ; // 유저의 리스폰 방향 값
-	float m_posX, m_posY, m_posZ; // 유저의 위치 값
-	float m_rotX, m_rotY, m_rotZ; // 유저의 방향 값
-	float m_velX, m_velY, m_velZ; // 유저의 속력 값
+	float m_move; // 유저의 위치 입력 값
+	float m_rotate; // 유저의 방향 입력 값
+	float m_mouseX; // 유저의 마우스 입력 값
 
 };
 
@@ -84,6 +84,10 @@ public:
 	// key : P2PGroup HostID
 	unordered_map<int, CP2PGroup> m_playerGroups;
 
+	// P2P 그룹의 클라이언트 정보
+	// key : P2PGroup HostID
+	unordered_map<int, HostIDArray> m_playerGroups_TEST;
+
 	// 방의 최대 인원 수
 	int max_player_num = 4;
 
@@ -107,4 +111,7 @@ private:
 
 	// 게임 방 퇴장 원격 함수
 	DECRMI_S2C2S_LeaveGameRoom;
+
+	// 게임 방 퇴장 원격 함수
+	DECRMI_S2C2S_Player_Move;
 };

@@ -19,4 +19,5 @@ global S2C2S 1000
         [in] float px, [in] float py, [in] float pz, 
 		[in] float rx, [in] float ry, [in] float rz);
 
+    Player_Move([in] int m_team_num, [in] float m_move, [in] float m_rotate, [in] float m_mouseX);
 }

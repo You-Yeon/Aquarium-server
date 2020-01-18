@@ -22,6 +22,8 @@ namespace S2C2S {
     static const ::Proud::RmiID Rmi_GameStart = (::Proud::RmiID)(1000+8);
                
     static const ::Proud::RmiID Rmi_PlayerInfo = (::Proud::RmiID)(1000+9);
+               
+    static const ::Proud::RmiID Rmi_Player_Move = (::Proud::RmiID)(1000+10);
 
 	// List that has RMI ID.
 	extern ::Proud::RmiID g_RmiIDList[];
