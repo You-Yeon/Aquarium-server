@@ -5,6 +5,7 @@ Aquarium
 📝 Introduction
 ------------
 Aquarium의 서버입니다.    
+
 Aquarium 게임에 대한 자세한 설명은 다음 페이지에 적혀있습니다.   
 ( https://github.com/You-Yeon/Aquarium_windows/blob/master/README.md )  
   
